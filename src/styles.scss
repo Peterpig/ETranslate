@@ -1,0 +1,81 @@
+/* theme color */
+$--color-primary: teal;
+
+/* icon font path, required */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+@import "~element-ui/packages/theme-chalk/src/index";
+
+html {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+#app {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    font-family: PingFangSC-Regular, Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.br{
+    border-radius: 8px;
+}
+
+
+.text-large{
+    font-size: 18px;
+}
+.text-mid{
+    font-size: 16px;
+}
+.text-bold{
+    font-weight: 600;
+}
+
+.mt{
+    margin-top: 8px;
+}
+.ml{
+    margin-left: 8px;
+}
+.bd{
+    border: var(--el-border-base);
+}
+.br{
+    border-radius: 8px;
+}
+.bd-shadow{
+    box-shadow: var(--el-box-shadow-light);
+}
+.circle {
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
