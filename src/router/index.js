@@ -27,16 +27,25 @@ const routes = [
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import("@/views/SettingsView.vue"),
+        component: () => import("@/views/settings/SettingsView.vue"),
         children: [
             {
                 path: "translate",
                 // route level code-splitting
                 // this generates a separate chunk (about.[hash].js) for this route
                 // which is lazy-loaded when the route is visited.
-                component: () => import("@/views/TranslateSettingsView.vue"),
+                component: () =>
+                    import("@/views/settings/TranslateSettingsView.vue"),
             },
         ],
+    },
+    {
+        path: "/translate",
+        name: "翻译",
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import("@/views/translate/TranslateText.vue"),
     },
 ];
 

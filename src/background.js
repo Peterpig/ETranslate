@@ -1,9 +1,17 @@
-"use strict";
-
-import { app, protocol, BrowserWindow, Menu, Tray } from "electron";
+import {
+    app,
+    protocol,
+    BrowserWindow,
+    Menu,
+    Tray,
+    ipcMain,
+    clipboard,
+} from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
+const path = require("path");
 const config = require("./config");
 const shortCutMgr = require("./utils/shortCutMgr");
+import { getSelectedText } from "electron-selected-text";
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -12,6 +20,10 @@ protocol.registerSchemesAsPrivileged([
 
 let mainWindow;
 let translateWindow;
+
+function printReadText() {
+    console.log("text == ", clipboard.readText());
+}
 
 async function createWindow() {
     mainWindow = new BrowserWindow({
@@ -27,6 +39,9 @@ async function createWindow() {
         transparent: !config.debug,
         alwaysOnTop: !config.debug,
         disableAutoHideCursor: true,
+        webPreferences: {
+            proload: path.join(__dirname, "preload.js"),
+        },
     });
 
     if (config.debug) {
@@ -56,7 +71,8 @@ export async function createTranslateWindow() {
         height: config.height,
         title: config.title,
         type: config.debug ? "normal" : "splash",
-        frame: config.debug,
+        // frame: config.debug,
+        frame: false,
         skipTaskbar: !config.debug,
         autoHideMenuBar: !config.debug,
         backgroundColor: "alpha(opacity=0)",
@@ -64,26 +80,48 @@ export async function createTranslateWindow() {
         transparent: !config.debug,
         alwaysOnTop: !config.debug,
         disableAutoHideCursor: true,
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+        },
     });
 
     if (config.debug) {
-        await translateWindow.loadURL("http://127.0.0.1:8080/#/about");
-        if (!config.IS_TEST) translateWindow.webContents.openDevTools();
+        await translateWindow.loadURL("http://127.0.0.1:8080/#/translate");
+        if (!config.IS_TEST)
+            translateWindow.webContents.openDevTools({ mode: "bottom" });
     } else {
         createProtocol("app");
         translateWindow.loadURL("app://./index.html/#/about");
     }
 
+    translateWindow.fix = false;
     translateWindow.on("closed", () => {
         translateWindow = null;
         config.context.translateWindow = translateWindow;
     });
 
-    translateWindow.on("blur", () => {
-        console.log("blur ~~~~");
-        if (!config.debug) {
-            translateWindow.hide();
+    translateWindow.on("blur", (event) => {
+        if (config.context.translateWindow.fix) {
+            translateWindow.setAlwaysOnTop(true);
+            event.preventDefault();
+        } else {
+            // translateWindow.setAlwaysOnTop(false);
+            // translateWindow.hide();
+            translateWindow.close();
+            translateWindow = null;
         }
+    });
+    ipcMain.on("translateWin:fix", (event, data) => {
+        config.context.translateWindow.fix = data;
+    });
+    ipcMain.on("translateWin:selected", () => {
+        getSelectedText().then((text) => {
+            translateWindow.webContents.send(
+                "translateWin:selectedReply",
+                text.trim()
+            );
+        });
+        // translateWindow.webContents.send(text);
     });
 
     config.context.translateWindow = translateWindow;
@@ -92,7 +130,7 @@ export async function createTranslateWindow() {
 let tray;
 
 async function initTray() {
-    const icon = "./src/assets/CloudTabBarItem@2x.png";
+    const icon = "./src/assets/CloudTabBarItemTemplate.png";
     tray = new Tray(icon);
 
     const contextMenu = Menu.buildFromTemplate([
@@ -122,15 +160,16 @@ async function initMenu() {
 }
 
 function init() {
-    if (!config.debug) {
-        if (app.dock) app.dock.hide();
-    }
-
+    // if (!config.debug) {
+    //     if (app.dock) app.dock.hide();
+    // }
+    app.dock.hide();
     app.on("ready", async () => {
-        createWindow();
+        // createWindow();
         shortCutMgr.registerAll();
         initTray();
         initMenu();
+        printReadText();
     });
 
     app.on("window-all-closed", () => {

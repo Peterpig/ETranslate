@@ -8,21 +8,23 @@ const globalCommands = {
     translateText: {
         defaultShortcut: "ctrl+D",
         func: async () => {
-            console.log("ctrl+ddd", config.context.translateWindow);
+            electron.ipcMain;
             if (!config.context.translateWindow) {
                 await createTranslateWindow();
             }
+
             if (!config.context.translateWindow.isVisible()) {
                 config.context.translateWindow.restore();
                 config.context.translateWindow.show();
                 config.context.translateWindow.focus();
             }
+            config.context.translateWindow.focus();
         },
     },
 };
 
 const shortCutMgr = {
-    registerAll() {
+    async registerAll() {
         const { shortcuts } = config;
         Object.keys(globalCommands).forEach((cmd) => {
             const { func, defaultShortcut } = globalCommands[cmd];
@@ -34,7 +36,6 @@ const shortCutMgr = {
 
             if (!shortcut) return;
 
-            console.log("shortcut === ", shortcut);
             const ret = electron.globalShortcut.register(shortcut, func);
             if (!ret) {
                 dialog.showErrorBox(
