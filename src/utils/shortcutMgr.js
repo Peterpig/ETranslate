@@ -8,7 +8,6 @@ const globalCommands = {
     translateText: {
         defaultShortcut: "ctrl+D",
         func: async () => {
-            electron.ipcMain;
             if (!config.context.translateWindow) {
                 await createTranslateWindow();
             }

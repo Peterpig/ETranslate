@@ -19,7 +19,11 @@
          )
          .input-tool
             i.iconfont-laba
-            i.iconfont-copy
+            i.iconfont-copy(@click="copyText")
+
+      .text-from-to
+         //- el-select()
+         //- el-select()
 
 
 </template>
@@ -34,24 +38,33 @@ export default {
     }
   },
   mounted(){
-      window.ipcRenderer.send("translateWin:selected")
-      window.ipcRenderer.receive('translateWin:selectedReply', (text) => {
-         if(text){
-            this.translateText = text
-         }
-      })
+      const text = window.API.getSelectedText()
+      if(text){
+         this.translateText = text
+      }
   },
   watch: {
   },
   methods: {
       tudingToogle(){
          this.tudingIsFix = !this.tudingIsFix
-         window.ipcRenderer.send("translateWin:fix", this.tudingIsFix)
+         window.API.fixWindow(this.tudingIsFix)
       },
       onBlur(){
          if(this.translateText === ""){
             this.$refs.input.focus()
          }
+      },
+      copyText(){
+         if(!this.translateText){
+            this.$message("没有要复制的文本")
+            return
+         }
+         window.API.copyText(this.translateText)
+         this.$message({
+            message: "复制成功",
+            type: "success"
+         })
       }
   }
 }
