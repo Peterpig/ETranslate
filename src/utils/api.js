@@ -1,13 +1,15 @@
 import { mainWindow } from "@/background";
 import { BrowserWindow, ipcMain, clipboard, dialog } from "electron";
+const execSync = require("child_process").execSync;
 
 import { getSelectedText } from "electron-selected-text";
 
 class API {
     static getSelectedText() {
         return getSelectedText().then((text) => {
-            console.log("text ==", text);
-            return text.trim();
+            if (text) {
+                return text.trim();
+            }
         });
     }
 
@@ -16,7 +18,9 @@ class API {
         // setInterval(function () {
         //     window.setAlwaysOnTop(data.isFix);
         // }, 1);
-        window.setAlwaysOnTop(data.isFix);
+        if (!window.isDestroyed()) {
+            window.setAlwaysOnTop(data.isFix);
+        }
     }
 
     static copyText({ data }) {
@@ -25,6 +29,26 @@ class API {
 
     static showMessageBox({ data }, window) {
         dialog.showMessageBox(window, data.data);
+    }
+
+    static runExec(cmdStr, cmdPath, logIt = true) {
+        let stdout, stderr;
+        if (logIt) {
+            console.log(`cd ${cmdPath}; ${cmdStr}`);
+        }
+        try {
+            stdout = execSync(cmdStr, { cwd: cmdPath, encoding: "utf8" });
+        } catch (err) {
+            stderr = err.stderr.toString();
+        }
+        return { stdout, stderr };
+    }
+    static TranslateIdentify({ data }) {
+        return API.runExec(
+            "sh TranslateIdentify.sh '" + data.data + "'",
+            "./src/utils/",
+            false
+        );
     }
 }
 

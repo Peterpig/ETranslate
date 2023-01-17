@@ -1,11 +1,8 @@
 /* theme color */
-$--color-primary: teal;
+$--color-primary: #409EFF;
 
 /* icon font path, required */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
-
-@import "~element-ui/packages/theme-chalk/src/index";
-
 html {
     height: 100%;
     width: 100%;
@@ -48,7 +45,6 @@ body {
     border-radius: 8px;
 }
 
-
 .text-large{
     font-size: 18px;
 }
@@ -66,13 +62,13 @@ body {
     margin-left: 8px;
 }
 .bd{
-    border: var(--el-border-base);
+    border: 1px solid #dcdfe6;
 }
 .br{
     border-radius: 8px;
 }
 .bd-shadow{
-    box-shadow: var(--el-box-shadow-light);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 .circle {
     border-radius: 50%;

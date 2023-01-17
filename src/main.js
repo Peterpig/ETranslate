@@ -1,9 +1,12 @@
+import "@/styles.scss";
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import ElementUI from "element-ui";
-import "@/styles.scss";
+import _ from "lodash";
+
+Vue.prototype._ = _;
 
 Vue.use(ElementUI);
 

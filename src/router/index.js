@@ -9,7 +9,7 @@ const routes = [
         path: "/",
         name: "home",
         component: HomeView,
-        redirect: "/settings/translate",
+        // redirect: "/settings/translate",
     },
     {
         path: "/about",
@@ -23,7 +23,7 @@ const routes = [
     {
         path: "/settings",
         name: "设置",
-        redirect: "/settings/translate",
+        // redirect: "/settings/translate",
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.

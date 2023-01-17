@@ -37,7 +37,7 @@ async function createWindow() {
 
     if (config.debug) {
         await mainWindow.loadURL("http://127.0.0.1:8080/");
-        if (!config.IS_TEST) mainWindow.webContents.openDevTools();
+        // if (!config.IS_TEST) mainWindow.webContents.openDevTools();
     } else {
         createProtocol("app");
         mainWindow.loadURL("app://./index.html");

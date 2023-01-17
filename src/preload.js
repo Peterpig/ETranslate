@@ -29,4 +29,7 @@ contextBridge.exposeInMainWorld("API", {
     showMessageBox: (data) => {
         return ipcSendSync("showMessageBox", { data });
     },
+    TranslateIdentify: (data) => {
+        return ipcSendSync("TranslateIdentify", { data });
+    },
 });
