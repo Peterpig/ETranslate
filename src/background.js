@@ -44,13 +44,16 @@ async function createWindow() {
     }
 
     mainWindow.on("closed", () => {
+        mainWindow.close();
         mainWindow = null;
     });
 
     mainWindow.on("blur", () => {
-        if (!config.debug) {
-            mainWindow.hide();
-        }
+        // if (!config.debug) {
+        //     mainWindow.hide();
+        // }
+        mainWindow.close();
+        mainWindow = null;
     });
     API(translateWindow);
     config.context.mainWindow = mainWindow;
@@ -87,21 +90,17 @@ export async function createTranslateWindow() {
         translateWindow.loadURL("app://./index.html/#/about");
     }
 
-    translateWindow.fix = false;
     translateWindow.on("closed", () => {
-        translateWindow = null;
-        config.context.translateWindow = translateWindow;
+        translateWindow = undefined;
     });
 
     translateWindow.on("blur", (event) => {
         if (translateWindow.isAlwaysOnTop()) {
             event.preventDefault();
         } else {
-            translateWindow.close();
-            translateWindow = null;
+            translateWindow.hide();
         }
     });
-
     config.context.translateWindow = translateWindow;
 }
 

@@ -1,4 +1,5 @@
 import { mainWindow } from "@/background";
+const path = require("path");
 import { BrowserWindow, ipcMain, clipboard, dialog } from "electron";
 const execSync = require("child_process").execSync;
 
@@ -34,7 +35,7 @@ class API {
     static runExec(cmdStr, cmdPath, logIt = true) {
         let stdout, stderr;
         if (logIt) {
-            console.log(`cd ${cmdPath}; ${cmdStr}`);
+            console.log(`cd ${path.resolve(cmdPath)}; ${cmdStr}`);
         }
         try {
             stdout = execSync(cmdStr, { cwd: cmdPath, encoding: "utf8" });
@@ -47,7 +48,7 @@ class API {
         return API.runExec(
             "sh TranslateIdentify.sh '" + data.data + "'",
             "./src/utils/",
-            false
+            true
         );
     }
 }

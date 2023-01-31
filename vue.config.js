@@ -16,22 +16,22 @@ module.exports = defineConfig({
     },
     // loaderOptions: {
     //     sass: {
-    //         data: `@import "@/styles/_variables.scss";`,
+    //         data: `@import "@/styles.scss";`,
     //     },
     // },
     chainWebpack: (config) => {
-        // const types = ["vue-modules", "vue", "normal-modules", "normal"];
-        // types.forEach((type) => {
-        //     //匹配到所有需要导入的文件
-        //     config.module
-        //         .rule("scss")
-        //         .oneOf(type)
-        //         .use("style-resource")
-        //         .loader("style-resources-loader")
-        //         .options({
-        //             patterns: [path.resolve(__dirname, "src/styles.scss")],
-        //         });
-        // });
+        const types = ["vue-modules", "vue", "normal-modules", "normal"];
+        types.forEach((type) => {
+            //匹配到所有需要导入的文件
+            config.module
+                .rule("scss")
+                .oneOf(type)
+                .use("style-resource")
+                .loader("style-resources-loader")
+                .options({
+                    patterns: [path.resolve(__dirname, "src/styles.scss")],
+                });
+        });
 
         config.module
             .rule("node")

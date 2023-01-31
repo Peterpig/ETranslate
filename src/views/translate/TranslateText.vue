@@ -16,12 +16,12 @@
             :rows=3
             :autosize="{ minRows: minRows}"
             @blur="onBlur"
-            @keyup.enter.native="identifyText"
+
          )
          .input-tool
             i.iconfont-laba
             i.iconfont-copy(@click="copyText")
-            .identifyText.bd.br(v-if="lang")
+            .identifyText.bd.br(v-show="lang")
                | 识别为
                .lang
                   |  {{ lang }}
@@ -35,10 +35,9 @@
 </template>
 
 <script >
-// import _ from "lodash";
+import _ from "lodash";
 
 export default {
-  name: 'SettingsView',
   data(){
     return {
       tudingIsFix: false,
@@ -54,9 +53,11 @@ export default {
    }
   },
   watch: {
-   translateText(newVal){
+   translateText(newVal, oldVal){
       if(!newVal)
          this.lang = null
+      if(newVal.trim() !== oldVal.trim())
+         this.identifyText()
    }
   },
   methods: {
@@ -84,15 +85,18 @@ export default {
             type: "success"
          })
       },
-      // identifyText: _.debounce(function() {
-      //    console.log("啊啊啊啊啊啊啊")
-      //    let res = window.API.TranslateIdentify(this.translateText.trim())
-      //    this.lang = res.stdout
-      // }, 1000)
-      identifyText(){
-         let res = window.API.TranslateIdentify(this.translateText.trim())
+      identifyText: _.debounce(async function() {
+         const text = this.translateText.trim()
+         if(!text)return
+         let res = window.API.TranslateIdentify(text)
          this.lang = res.stdout
-      }
+      }, 1000)
+
+      // async identifyText(){
+      //    console.log("111111")
+      //    let res = await window.API.TranslateIdentify(this.translateText.trim())
+      //    this.lang = res.stdout
+      // }
   }
 }
 </script>
@@ -134,6 +138,9 @@ export default {
          position: absolute;
          bottom: 10px;
          left: 20px;
+         display: flex;
+         flex-wrap: nowrap;
+         align-items: center;
          i {
             margin-right: 10px;
             font-size: 16px;
@@ -143,12 +150,12 @@ export default {
             font-size: 18px;
          }
          .identifyText{
-            display: inline-block;
-            padding: 4px 8px;
+            padding: 3px 8px;
             font-size: 10px;
+            display: flex;
+            flex-wrap: nowrap;
             .lang {
-               display: inline-block;
-               // color: $--color-primary;
+               color: $--color-primary;
             }
          }
       }
