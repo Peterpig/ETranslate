@@ -75,7 +75,7 @@ export default {
       },
       copyText(){
          if(!this.translateText){
-            this.$message("没有要复制的文本")
+            this.$message({"message": "没有要复制的文本", "duration": 0})
             return
          }
          window.API.copyText(this.translateText)
