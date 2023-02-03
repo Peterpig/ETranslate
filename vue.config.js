@@ -8,6 +8,7 @@ module.exports = defineConfig({
     pluginOptions: {
         electronBuilder: {
             preload: "src/preload.js",
+            mainProcessWatch: ["src"],
         },
         "style-resources-loader": {
             preProcessor: "scss",

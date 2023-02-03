@@ -24,25 +24,26 @@ function loadPluginMap() {
 }
 
 function getPlugin(pluginInfo) {
-    console.log("pluginInfo === ", pluginInfo);
-    const pluginFile = path.normalize(pluginInfo.path);
-    console.log("pluginFile === ", pluginFile);
-    const pluginIsRequiredBefore = !!require.cache[pluginFile];
-    const plugin = require(pluginFile);
-    console.log("plugin === ", plugin);
-    pluginMap[pluginInfo.name] = plugin;
-    if (!pluginIsRequiredBefore) {
-        try {
-            // init once
-            plugin.init &&
-                plugin.init(pluginInfo.config, config, config.context);
-            // setConfig was declared
-            plugin.setConfig &&
-                plugin.setConfig(pluginInfo.config, config, config.context);
-        } catch (e) {
-            console.error("Plugin [%s] setConfig failed!!", pluginInfo.name, e);
-        }
-    }
+    // const plugin = require("/Users/orange/workspace/ETranslate/src/plugins/youdao/index.js");
+    // const pluginFile = path.normalize(pluginInfo.path);
+
+    // const pluginIsRequiredBefore = !!require.cache[pluginFile];
+    // const plugin = require(pluginFile);
+    const plugin = require("/Users/orange/workspace/ETranslate/src/plugins/youdao/index.js");
+    // console.log("plugin === ", plugin);
+    // pluginMap[pluginInfo.name] = plugin;
+    // if (!pluginIsRequiredBefore) {
+    //     try {
+    //         // init once
+    //         plugin.init &&
+    //             plugin.init(pluginInfo.config, config, config.context);
+    //         // setConfig was declared
+    //         plugin.setConfig &&
+    //             plugin.setConfig(pluginInfo.config, config, config.context);
+    //     } catch (e) {
+    //         console.error("Plugin [%s] setConfig failed!!", pluginInfo.name, e);
+    //     }
+    // }
     return plugin;
 }
 

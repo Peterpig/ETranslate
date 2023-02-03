@@ -44,7 +44,7 @@ class API_ {
         return API_.runExec(
             "sh TranslateIdentify.sh '" + data.data + "'",
             "./src/utils/",
-            true
+            false
         );
     }
 
