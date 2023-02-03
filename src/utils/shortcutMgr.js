@@ -17,7 +17,6 @@ const globalCommands = {
             }
 
             if (!config.context.translateWindow.isVisible()) {
-                config.context.translateWindow.restore();
                 config.context.translateWindow.show();
                 config.context.translateWindow.focus();
             }

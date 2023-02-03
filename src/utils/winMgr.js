@@ -1,15 +1,12 @@
-const { BrowserWindow } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const { createProtocol } = require("vue-cli-plugin-electron-builder/lib");
 const path = require("path");
 
-const { API } = require("./api");
-const config = require("../config");
-
-let mainWindow;
-let translateWindow;
+const { API } = require("@/utils/api");
+const config = require("@/config");
 
 async function createWindow() {
-    mainWindow = new BrowserWindow({
+    config.context.mainWindow = new BrowserWindow({
         width: 900,
         height: 700,
         title: config.title,
@@ -28,31 +25,19 @@ async function createWindow() {
     });
 
     if (config.debug) {
-        await mainWindow.loadURL("http://127.0.0.1:8080/");
+        await config.context.mainWindow.loadURL("http://127.0.0.1:8080/");
         // if (!config.IS_TEST) mainWindow.webContents.openDevTools();
     } else {
         createProtocol("app");
-        mainWindow.loadURL("app://./index.html");
+        config.context.mainWindow.loadURL("app://./index.html");
     }
 
-    mainWindow.on("closed", () => {
-        mainWindow.close();
-        mainWindow = null;
-    });
-
-    mainWindow.on("blur", () => {
-        // if (!config.debug) {
-        //     mainWindow.hide();
-        // }
-        mainWindow.close();
-        mainWindow = null;
-    });
-    API(translateWindow);
-    config.context.mainWindow = mainWindow;
+    config.context.mainWindow.on("blur", () => {});
+    API(config.context.mainWindow);
 }
 
 async function createTranslateWindow() {
-    translateWindow = new BrowserWindow({
+    config.context.translateWindow = new BrowserWindow({
         width: config.width,
         height: config.height,
         title: config.title,
@@ -71,31 +56,38 @@ async function createTranslateWindow() {
         },
     });
 
-    API(translateWindow);
-
     if (config.debug) {
-        await translateWindow.loadURL("http://127.0.0.1:8080/#/translate");
+        await config.context.translateWindow.loadURL(
+            "http://127.0.0.1:8080/#/translate"
+        );
         if (!config.IS_TEST)
-            translateWindow.webContents.openDevTools({ mode: "bottom" });
+            config.context.translateWindow.webContents.openDevTools({
+                mode: "bottom",
+            });
     } else {
         createProtocol("app");
-        translateWindow.loadURL("app://./index.html/#/translate");
-        translateWindow.webContents.openDevTools({ mode: "bottom" });
+        config.context.translateWindow.loadURL(
+            "app://./index.html/#/translate"
+        );
+        config.context.translateWindow.webContents.openDevTools({
+            mode: "bottom",
+        });
     }
 
-    translateWindow.on("closed", () => {
-        translateWindow = undefined;
-        config.context.translateWindow = undefined;
-    });
-
-    translateWindow.on("blur", (event) => {
-        if (translateWindow.isAlwaysOnTop()) {
+    config.context.translateWindow.on("blur", (event) => {
+        if (config.context.translateWindow.isAlwaysOnTop()) {
             event.preventDefault();
         } else {
-            translateWindow.hide();
+            config.context.translateWindow.hide();
         }
     });
-    config.context.translateWindow = translateWindow;
+
+    config.context.translateWindow.on("close", () => {
+        config.context.translateWindow = null;
+    });
+    config.context.translateWindow.on("closed", () => {
+        config.context.translateWindow = null;
+    });
 }
 
 module.exports = { createWindow, createTranslateWindow };

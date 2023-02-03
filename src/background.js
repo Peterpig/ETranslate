@@ -1,11 +1,13 @@
 const { app, protocol, BrowserWindow } = require("electron");
 
-const { loadPluginMap } = require("./plugins/index.js");
+const { loadPluginMap } = require("@/plugins/index.js");
 
-const shortCutMgr = require("./utils/shortCutMgr");
-const { createWindow, createTranslateWindow } = require("./utils/winMgr");
-const initMenu = require("./utils/menuMgr");
-const initTray = require("./utils/trayMgr");
+const shortCutMgr = require("@/utils/shortCutMgr");
+const { createWindow } = require("@/utils/winMgr");
+const initMenu = require("@/utils/menuMgr");
+const initTray = require("@/utils/trayMgr");
+const { API } = require("@/utils/api");
+const config = require("@/config");
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -23,7 +25,6 @@ function init() {
         initTray();
         initMenu();
         loadPluginMap();
-        createTranslateWindow();
     });
 
     app.on("window-all-closed", () => {
@@ -33,12 +34,9 @@ function init() {
     });
 
     app.on("activate", () => {
-        console.log(
-            "BrowserWindow.getAllWindows().length == ",
-            BrowserWindow.getAllWindows().length
-        );
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
+    API(config.context.translateWindow);
 }
 
 init();
