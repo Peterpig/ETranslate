@@ -10,10 +10,12 @@ const ipcSendSync = (type, data) => {
 };
 
 const ipcSend = (type, data) => {
-    ipcRenderer.send("msg-trigger", {
+    const returnValue = ipcRenderer.send("msg-trigger", {
         type,
         data,
     });
+    if (returnValue instanceof Error) throw returnValue;
+    return returnValue;
 };
 
 contextBridge.exposeInMainWorld("API", {
@@ -32,4 +34,14 @@ contextBridge.exposeInMainWorld("API", {
     TranslateIdentify: (data) => {
         return ipcSendSync("TranslateIdentify", { data });
     },
+    exec: (data) => {
+        // return ipcSendSync("PluginExec", { data });
+        return ipcSend("PluginExec", { data });
+    },
 });
+
+// contextBridge.exposeInMainWorld("Plugin", {
+//     exec: (data) => {
+//         return ipcSendSync("PluginExec", { data });
+//     },
+// });

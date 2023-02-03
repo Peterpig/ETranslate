@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 
 const { merge } = require("../utils/merge");
-const defaultConfig = require("./config.default.js");
+const defaultConfig = require("@/config/config.default.js");
 const { debug, dataPath, userConfigFile } = require("../constants");
 
 let isFreshInstalled = false;

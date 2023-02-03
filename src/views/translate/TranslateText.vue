@@ -25,6 +25,7 @@
                | 识别为
                .lang
                   |  {{ lang }}
+         el-button(@click="Translate") 翻译
 
 
       .row.text-from-to
@@ -36,6 +37,7 @@
 
 <script >
 import _ from "lodash";
+// import { translateWindow } from '@/background';
 
 export default {
   data(){
@@ -71,7 +73,6 @@ export default {
          }
       },
       inputFocus(){
-         console.log("inputFocus ==")
          this.$refs.input.focus()
       },
       copyText(){
@@ -90,8 +91,10 @@ export default {
          if(!text)return
          let res = window.API.TranslateIdentify(text)
          this.lang = res.stdout
-      }, 1000)
-
+      }, 1000),
+      Translate(){
+         window.API.exec(`youdao ${this.translateText}`)
+      },
       // async identifyText(){
       //    console.log("111111")
       //    let res = await window.API.TranslateIdentify(this.translateText.trim())

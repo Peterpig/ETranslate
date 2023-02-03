@@ -1,7 +1,7 @@
 const os = require("os");
 
 const debug = process.env.NODE_ENV !== "production";
-const dataPath = `${os.homedir()}/.Electron`;
+const dataPath = `${os.homedir()}/.ETranslate`;
 const userConfigFile = `${dataPath}/config.json`;
 
 module.exports = {

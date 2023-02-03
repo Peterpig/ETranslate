@@ -1,11 +1,11 @@
-import { mainWindow } from "@/background";
 const path = require("path");
-import { BrowserWindow, ipcMain, clipboard, dialog } from "electron";
+const { BrowserWindow, ipcMain, clipboard, dialog } = require("electron");
 const execSync = require("child_process").execSync;
 
-import { getSelectedText } from "electron-selected-text";
+const { getSelectedText } = require("electron-selected-text");
+const { parseCmd, getPlugin } = require("../plugins");
 
-class API {
+class API_ {
     static getSelectedText() {
         return getSelectedText().then((text) => {
             if (text) {
@@ -45,15 +45,25 @@ class API {
         return { stdout, stderr };
     }
     static TranslateIdentify({ data }) {
-        return API.runExec(
+        return API_.runExec(
             "sh TranslateIdentify.sh '" + data.data + "'",
             "./src/utils/",
             true
         );
     }
+
+    static PluginExec({ data }) {
+        const cmdInfo = parseCmd(data.data);
+        const plugin = getPlugin(cmdInfo.plugin);
+        try {
+            return plugin.exec(cmdInfo);
+        } catch (e) {
+            throw new Error("Plugin [%s] exec failed!", cmdInfo.plugin.name, e);
+        }
+    }
 }
 
-export default (mainWindow) => {
+export function API(mainWindow) {
     ipcMain.on("msg-trigger", async (event, arg) => {
         let window;
         try {
@@ -62,7 +72,7 @@ export default (mainWindow) => {
             return;
         }
 
-        const data = await API[arg.type](arg, window, event);
+        const data = await API_[arg.type](arg, window, event);
         event.returnValue = data;
     });
-};
+}

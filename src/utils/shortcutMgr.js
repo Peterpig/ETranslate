@@ -1,6 +1,6 @@
 const electron = require("electron");
 const dialog = (electron || electron.remote).dialog;
-const { createTranslateWindow } = require("../background.js");
+const { createTranslateWindow } = require("./winMgr");
 
 const config = require("../config");
 
@@ -8,6 +8,10 @@ const globalCommands = {
     translateText: {
         defaultShortcut: "ctrl+D",
         func: async () => {
+            console.log(
+                "config.context.translateWindow == ",
+                config.context.translateWindow
+            );
             if (!config.context.translateWindow) {
                 await createTranslateWindow();
             }
