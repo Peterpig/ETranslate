@@ -15,10 +15,7 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 function init() {
-    // if (!config.debug) {
-    //     if (app.dock) app.dock.hide();
-    // }
-    // app.dock.hide();
+    app.dock.hide();
     app.on("ready", async () => {
         // createWindow();
         shortCutMgr.registerAll();

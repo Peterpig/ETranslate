@@ -14,11 +14,6 @@ module.exports = defineConfig({
             patterns: [],
         },
     },
-    // loaderOptions: {
-    //     sass: {
-    //         data: `@import "@/styles.scss";`,
-    //     },
-    // },
     chainWebpack: (config) => {
         const types = ["vue-modules", "vue", "normal-modules", "normal"];
         types.forEach((type) => {
@@ -40,5 +35,7 @@ module.exports = defineConfig({
             .loader("node-loader");
 
         config.plugin().use(NodePolyfillPlugin);
+
+        config.devServer.watch = true;
     },
 });

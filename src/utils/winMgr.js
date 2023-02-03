@@ -1,8 +1,7 @@
-const { app, BrowserWindow } = require("electron");
+const { BrowserWindow } = require("electron");
 const { createProtocol } = require("vue-cli-plugin-electron-builder/lib");
 const path = require("path");
 
-const { API } = require("@/utils/api");
 const config = require("@/config");
 
 async function createWindow() {
@@ -33,7 +32,6 @@ async function createWindow() {
     }
 
     config.context.mainWindow.on("blur", () => {});
-    API(config.context.mainWindow);
 }
 
 async function createTranslateWindow() {

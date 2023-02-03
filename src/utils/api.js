@@ -15,10 +15,6 @@ class API_ {
     }
 
     static fixWindow({ data }, window) {
-        console.log("window.isDestroyed() == ", window.isDestroyed());
-        // setInterval(function () {
-        //     window.setAlwaysOnTop(data.isFix);
-        // }, 1);
         if (!window.isDestroyed()) {
             window.setAlwaysOnTop(data.isFix);
         }

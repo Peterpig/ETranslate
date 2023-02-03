@@ -64,8 +64,8 @@ export default {
   },
   methods: {
       tudingToogle(){
-         this.tudingIsFix = !this.tudingIsFix
          window.API.fixWindow(this.tudingIsFix)
+         this.tudingIsFix = !this.tudingIsFix
       },
       onBlur(){
          if(this.translateText === ""){
