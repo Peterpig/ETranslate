@@ -50,11 +50,11 @@ class API_ {
 
     static PluginExec({ data }) {
         const cmdInfo = parseCmd(data.data);
-        const plugin = getPlugin(cmdInfo.plugin);
+        const plugin = getPlugin(cmdInfo);
         try {
             return plugin.exec(cmdInfo);
         } catch (e) {
-            throw new Error("Plugin [%s] exec failed!", cmdInfo.plugin.name, e);
+            throw new Error("Plugin [%s] exec failed!", plugin.name, e);
         }
     }
 }

@@ -8,10 +8,6 @@ const globalCommands = {
     translateText: {
         defaultShortcut: "ctrl+D",
         func: async () => {
-            console.log(
-                "config.context.translateWindow == ",
-                config.context.translateWindow
-            );
             if (!config.context.translateWindow) {
                 await createTranslateWindow();
             }

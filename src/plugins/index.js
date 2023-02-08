@@ -1,5 +1,6 @@
-let path = require("path");
-const config = require("../config");
+// let path = require("path");
+const config = require("@/config");
+// const { resolve } = require("path");
 
 let pluginMap;
 
@@ -24,26 +25,39 @@ function loadPluginMap() {
 }
 
 function getPlugin(pluginInfo) {
-    // const plugin = require("/Users/orange/workspace/ETranslate/src/plugins/youdao/index.js");
-    // const pluginFile = path.normalize(pluginInfo.path);
+    let plugin;
+    try {
+        plugin = require(`../plugins/${pluginInfo.name}`);
+        console.log("plugin == ", plugin);
+    } catch (error) {
+        console.error("Plugin [%s] load failed!!", pluginInfo.name, error);
+        return;
+    }
+    pluginMap[pluginInfo.name].plugin = plugin;
 
-    // const pluginIsRequiredBefore = !!require.cache[pluginFile];
-    // const plugin = require(pluginFile);
-    const plugin = require("/Users/orange/workspace/ETranslate/src/plugins/youdao/index.js");
-    // console.log("plugin === ", plugin);
-    // pluginMap[pluginInfo.name] = plugin;
-    // if (!pluginIsRequiredBefore) {
-    //     try {
-    //         // init once
-    //         plugin.init &&
-    //             plugin.init(pluginInfo.config, config, config.context);
-    //         // setConfig was declared
-    //         plugin.setConfig &&
-    //             plugin.setConfig(pluginInfo.config, config, config.context);
-    //     } catch (e) {
-    //         console.error("Plugin [%s] setConfig failed!!", pluginInfo.name, e);
-    //     }
-    // }
+    let pluginIsRequiredBefore = false;
+    try {
+        const pluginPath = require.resolve(`../plugins/${pluginInfo.name}`);
+        console.log("pluginPath == ", pluginPath);
+
+        pluginIsRequiredBefore =
+            !!require.cache[require.resolve(`../plugins/${pluginInfo.name}`)];
+    } catch (error) {
+        console.error("pluginPath没找到", error);
+    }
+
+    if (!pluginIsRequiredBefore) {
+        try {
+            // init once
+            plugin.init &&
+                plugin.init(pluginInfo.config, config, config.context);
+            // setConfig was declared
+            plugin.setConfig &&
+                plugin.setConfig(pluginInfo.config, config, config.context);
+        } catch (e) {
+            console.error("Plugin [%s] setConfig failed!!", pluginInfo.name, e);
+        }
+    }
     return plugin;
 }
 

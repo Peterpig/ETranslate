@@ -8,6 +8,7 @@ module.exports = {
         let args = cmdInfo.args.join(" ");
         if (!args) return;
         args = querystring.escape(args);
+        console.log("args == ", args);
 
         let ret = "";
 
@@ -20,4 +21,7 @@ module.exports = {
             });
         return ret;
     },
+
+    // 格式化翻译结果
+    parseRes() {},
 };

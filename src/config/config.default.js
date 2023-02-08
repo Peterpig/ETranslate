@@ -43,7 +43,6 @@ module.exports = {
         //     },
         // },
         youdao: {
-            path: `${__dirname}/../plugins/youdao/index.js`,
             enable: true,
             config: {},
         },
