@@ -24,8 +24,11 @@ contextBridge.exposeInMainWorld("API", {
     getSelectedText: () => {
         return ipcSend("getSelectedText");
     },
-    fixWindow: (isFix) => {
-        return ipcSendSync("fixWindow", { isFix });
+    fixTranslateWindowToogle: (isFix) => {
+        ipcSendSync("fixWindowToogle", {
+            isFix,
+            window: "translateWindow",
+        });
     },
     copyText: (text) => {
         ipcSendSync("copyText", { text });

@@ -1,6 +1,7 @@
 const path = require("path");
 const { BrowserWindow, ipcMain, clipboard } = require("electron");
 const execSync = require("child_process").execSync;
+const config = require("@/config");
 
 const { getSelectedText } = require("electron-selected-text");
 const { parseCmd, getPlugin } = require("../plugins");
@@ -14,9 +15,15 @@ class API_ {
         });
     }
 
-    static fixWindow({ data }, window) {
-        if (!window.isDestroyed()) {
-            window.setAlwaysOnTop(data.isFix);
+    static fixWindowToogle({ data }) {
+        console.log("context == ", config.context);
+
+        if (
+            data.window &&
+            config.context[data.window] &&
+            !config.context[data.window].isDestroyed()
+        ) {
+            config.context[data.window].setAlwaysOnTop(data.isFix);
         }
     }
 

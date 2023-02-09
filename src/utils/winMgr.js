@@ -40,7 +40,7 @@ async function createTranslateWindow() {
         height: config.height,
         title: config.title,
         resizable: false,
-        // frame: false,
+        frame: false,
         skipTaskbar: false,
         autoHideMenuBar: true,
         backgroundColor: "alpha(opacity=0)",

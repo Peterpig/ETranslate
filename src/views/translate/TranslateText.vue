@@ -67,8 +67,8 @@ export default {
   },
   methods: {
       tudingToogle(){
-         window.API.fixWindow(this.tudingIsFix)
          this.tudingIsFix = !this.tudingIsFix
+         window.API.fixTranslateWindowToogle(this.tudingIsFix)
       },
       onBlur(){
          if(this.translateText === ""){
@@ -107,7 +107,7 @@ export default {
 
 <style lang="scss" scoped>
 .main-box{
-   padding: 10px 20px;
+   padding: 10px;
    -webkit-app-region: drag;
    i {
       font-size: 20px;
@@ -141,7 +141,7 @@ export default {
       .input-tool{
          position: absolute;
          bottom: 10px;
-         left: 20px;
+         left: 10px;
          display: flex;
          flex-wrap: nowrap;
          align-items: center;
