@@ -44,6 +44,7 @@ module.exports = {
         // },
         youdao: {
             enable: true,
+            type: "translate",
             config: {},
         },
     },

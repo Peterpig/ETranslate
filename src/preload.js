@@ -9,33 +9,31 @@ const ipcSendSync = (type, data) => {
     return returnValue;
 };
 
-const ipcSend = (type, data) => {
-    const returnValue = ipcRenderer.send("msg-trigger", {
-        type,
-        data,
-    });
-    if (returnValue instanceof Error) throw returnValue;
-    return returnValue;
+const ipcSend = async (type, data) => {
+    return ipcRenderer
+        .invoke("msg-trigger", {
+            type,
+            data,
+        })
+        .then((res) => {
+            return JSON.parse(res);
+        });
 };
 
 contextBridge.exposeInMainWorld("API", {
     getSelectedText: () => {
-        return ipcSendSync("getSelectedText");
+        return ipcSend("getSelectedText");
     },
     fixWindow: (isFix) => {
         return ipcSendSync("fixWindow", { isFix });
     },
     copyText: (text) => {
-        return ipcSendSync("copyText", { text });
-    },
-    showMessageBox: (data) => {
-        return ipcSendSync("showMessageBox", { data });
+        ipcSendSync("copyText", { text });
     },
     TranslateIdentify: (data) => {
-        return ipcSendSync("TranslateIdentify", { data });
+        return ipcSend("TranslateIdentify", { data });
     },
     exec: (data) => {
-        // return ipcSendSync("PluginExec", { data });
         return ipcSend("PluginExec", { data });
     },
 });

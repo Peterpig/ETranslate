@@ -19,7 +19,7 @@ async function createWindow() {
         alwaysOnTop: !config.debug,
         disableAutoHideCursor: true,
         webPreferences: {
-            proload: path.join(__dirname, "preload.js"),
+            preload: path.join(__dirname, "preload.js"),
         },
     });
 
@@ -76,7 +76,8 @@ async function createTranslateWindow() {
         if (config.context.translateWindow.isAlwaysOnTop()) {
             event.preventDefault();
         } else {
-            config.context.translateWindow.hide();
+            config.context.translateWindow.close();
+            config.context.translateWindow = null;
         }
     });
 

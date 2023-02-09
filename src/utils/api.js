@@ -1,5 +1,5 @@
 const path = require("path");
-const { BrowserWindow, ipcMain, clipboard, dialog } = require("electron");
+const { BrowserWindow, ipcMain, clipboard } = require("electron");
 const execSync = require("child_process").execSync;
 
 const { getSelectedText } = require("electron-selected-text");
@@ -24,10 +24,6 @@ class API_ {
         clipboard.writeText(data.text);
     }
 
-    static showMessageBox({ data }, window) {
-        dialog.showMessageBox(window, data.data);
-    }
-
     static runExec(cmdStr, cmdPath, logIt = true) {
         let stdout, stderr;
         if (logIt) {
@@ -48,13 +44,15 @@ class API_ {
         );
     }
 
+    static getTranslatePlugins() {}
+
     static PluginExec({ data }) {
         const cmdInfo = parseCmd(data.data);
         const plugin = getPlugin(cmdInfo);
         try {
             return plugin.exec(cmdInfo);
         } catch (e) {
-            throw new Error("Plugin [%s] exec failed!", plugin.name, e);
+            throw new Error(`Plugin ${plugin.name} exec failed! ${e}`);
         }
     }
 }
@@ -70,5 +68,16 @@ export function API(mainWindow) {
 
         const data = await API_[arg.type](arg, window, event);
         event.returnValue = data;
+    });
+    ipcMain.handle("msg-trigger", async (event, arg) => {
+        let window;
+        try {
+            window = arg.winId ? BrowserWindow.fromId(arg.winId) : mainWindow;
+        } catch (error) {
+            return;
+        }
+
+        const data = (await API_[arg.type](arg, window, event)) || "";
+        return JSON.stringify(data);
     });
 }

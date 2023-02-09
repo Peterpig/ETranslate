@@ -1,36 +1,37 @@
 <template lang="pug">
-   .main-box
-      .row.tool-bar
-         .left
-            i.iconfont-tuding(v-show="tudingIsFix !== true" @click="tudingToogle")
-            i.iconfont-tuding-fix(v-show="tudingIsFix === true" @click="tudingToogle")
-         .right
-            //- i.iconfont-copy
+.main-box
+   .row.tool-bar
+      .left
+         i.iconfont-tuding(v-show="tudingIsFix !== true" @click="tudingToogle")
+         i.iconfont-tuding-fix(v-show="tudingIsFix === true" @click="tudingToogle")
+      .right
+         //- i.iconfont-copy
 
-      .row.text-box(@click="inputFocus")
-         el-input.input(
-            ref="input"
-            type="textarea"
-            v-model="translateText"
-            resize="none"
-            :rows=3
-            :autosize="{ minRows: minRows}"
-            @blur="onBlur"
+   .row.text-box(@click="inputFocus")
+      el-input.input(
+         ref="input"
+         type="textarea"
+         v-model="translateText"
+         resize="none"
+         :rows=3
+         :autosize="{ minRows: minRows}"
+         @blur="onBlur"
 
-         )
-         .input-tool
-            i.iconfont-laba
-            i.iconfont-copy(@click="copyText")
-            .identifyText.bd.br(v-show="lang")
-               | 识别为
-               .lang
-                  |  {{ lang }}
-         el-button(@click="Translate") 翻译
+      )
+      .input-tool
+         i.iconfont-laba
+         i.iconfont-copy(@click="copyText")
+         .identifyText.bd.br(v-show="lang")
+            | 识别为
+            .lang
+               |  {{ lang }}
+      el-button(@click="Translate") 翻译
+      | tt == {{ tt }}
 
 
-      .row.text-from-to
-         //- el-select()
-         //- el-select()
+   .row.text-from-to
+      //- el-select()
+      //- el-select()
 
 
 </template>
@@ -44,15 +45,17 @@ export default {
     return {
       tudingIsFix: false,
       translateText: "",
+      tt: "",
       lang: null,
       minRows: 3,
     }
   },
   mounted(){
-   const text = window.API.getSelectedText()
-   if(text){
-      this.translateText = text
-   }
+      window.API.getSelectedText().then((text)=>{
+            if(text){
+            this.translateText = text
+         }
+      })
   },
   watch: {
    translateText(newVal, oldVal){
@@ -89,17 +92,15 @@ export default {
       identifyText: _.debounce(async function() {
          const text = this.translateText.trim()
          if(!text)return
-         let res = window.API.TranslateIdentify(text)
-         this.lang = res.stdout
+         window.API.TranslateIdentify(text).then((res) => {
+            this.lang = res.stdout
+         })
       }, 1000),
       Translate(){
-         window.API.exec(`youdao ${this.translateText}`)
+         window.API.exec(`youdao ${this.translateText}`).then((res)=> {
+            this.tt = res
+         })
       },
-      // async identifyText(){
-      //    console.log("111111")
-      //    let res = await window.API.TranslateIdentify(this.translateText.trim())
-      //    this.lang = res.stdout
-      // }
   }
 }
 </script>
