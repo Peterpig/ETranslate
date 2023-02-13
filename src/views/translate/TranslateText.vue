@@ -40,7 +40,7 @@
             :class="{'arrow-down': plugin.fold === false,'arrow-left': plugin.fold === true}"
             @click="toogleFold(plugin)"
          )
-      .info(v-if="plugin.res")
+      .info(v-if="plugin.res" v-show="!plugin.fold && plugin.res")
          .ori
             | {{ plugin.res.ori }}
          .web(v-if="plugin.res.web && plugin.res.web.length > 0")
@@ -75,6 +75,7 @@ export default {
       window.API.getSelectedText().then((text)=>{
             if(text){
             this.translateText = text
+            this.Translate()
          }
       })
       let plugins_ = {}
@@ -144,7 +145,7 @@ export default {
                if(res){
                   plugin.res = res
                   plugin.loading = false
-                  plugin.fold = !res
+                  plugin.fold =  false
                }
 
             })
@@ -254,6 +255,7 @@ export default {
          .loading{
             transform: rotate(0deg);
             animation: rotation 3s linear infinite;
+            height: 20px;
          }
          .iconfont-arrow{
             font-size: 14px;

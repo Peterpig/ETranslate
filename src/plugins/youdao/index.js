@@ -25,11 +25,11 @@ function parseRes(res) {
     };
     if (!res || !res.data) return;
     if (res.data.translation) {
-        ret.ori = res.data.translation.join("\n");
+        ret.ori = res.data.translation.join(", ");
     }
     if (res.data.web) {
         res.data.web.forEach((element) => {
-            ret.web.push(element.value.join(","));
+            ret.web.push(element.value.join(", "));
         });
     }
     return ret;
