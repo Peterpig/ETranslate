@@ -1,11 +1,12 @@
-// let path = require("path");
+let path = require("path");
+const fs = require("fs");
 const config = require("@/config");
-// const { resolve } = require("path");
 
 let pluginMap;
 // pluginMap = {
 //     youdao: {
 //         name: "youdao",
+//         cn_name: "有道词典",
 //         enable: true,
 //         type: "translate",
 //         config: {},
@@ -16,14 +17,33 @@ let pluginMap;
 //     },
 // };
 
-function loadPluginMap() {
+async function loadPluginMap() {
     pluginMap = {};
+    console.log("loadPluginMap === ");
     Object.keys(config.plugins).forEach((pluginName) => {
-        const pluginInfo = config.plugins[pluginName];
+        let pluginInfo = config.plugins[pluginName];
         if (!pluginInfo.enable) return;
         pluginInfo.name = pluginName;
+
+        try {
+            let iconPath = require.resolve(
+                `@/plugins/${pluginInfo.name}/assets/icon.svg`
+            );
+            let err = fs.accessSync(iconPath, fs.constants.F_OK);
+            if (!err) {
+                pluginInfo.iconPath = iconPath;
+                pluginInfo.iconPath2 = `@/plugins/${pluginInfo.name}/assets/icon.svg`;
+                pluginInfo.iconPath3 = path.join(
+                    __dirname,
+                    `/plugins/${pluginInfo.name}/assets/icon.svg`
+                );
+            }
+        } catch (error) {
+            console.log("error == ", error);
+        }
         pluginMap[pluginName] = pluginInfo;
     });
+    config.pluginMap = pluginMap;
 }
 
 function getPlugin(pluginInfo) {

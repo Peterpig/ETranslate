@@ -1,6 +1,6 @@
 <template lang="pug">
 .main-box
-   .row.tool-bar
+   .tool-bar
       .left
          i.iconfont-tuding(v-show="tudingIsFix !== true" @click="tudingToogle")
          i.iconfont-tuding-fix(v-show="tudingIsFix === true" @click="tudingToogle")
@@ -28,6 +28,14 @@
       el-button(@click="Translate") 翻译
       | tt == {{ tt }}
 
+   .row.plugins.mt(v-for="plugin in plugins")
+      .header
+         el-image.image(
+            :src="require(`@/plugins/${plugin.name}/assets/icon.svg`)"
+         )
+         | {{ plugin.cn_name }}
+
+
 
    .row.text-from-to
       //- el-select()
@@ -48,6 +56,7 @@ export default {
       tt: "",
       lang: null,
       minRows: 3,
+      plugins: [],
     }
   },
   mounted(){
@@ -56,6 +65,10 @@ export default {
             this.translateText = text
          }
       })
+      window.API.getTranslatePlugins().then((plugins) => {
+         this.plugins = plugins
+      })
+      this.tudingToogle()
   },
   watch: {
    translateText(newVal, oldVal){
@@ -108,7 +121,6 @@ export default {
 <style lang="scss" scoped>
 .main-box{
    padding: 10px;
-   -webkit-app-region: drag;
    i {
       font-size: 20px;
    }
@@ -121,8 +133,8 @@ export default {
    }
    .tool-bar{
       -webkit-app-region: drag;
+      display: flex;
       .left {
-         float: left;
          width: 50%;
          text-align: left;
       }
@@ -133,7 +145,6 @@ export default {
    }
    .text-box{
       padding: 10px 5px;
-      margin-top: 30px;
       position: relative;
       .input{
          margin-bottom: 30px;
@@ -161,6 +172,16 @@ export default {
             .lang {
                color: $--color-primary;
             }
+         }
+      }
+   }
+
+   .plugins {
+      .header {
+         padding: 10px;
+         .image{
+            widows: 12px;
+            height: 12px;
          }
       }
    }

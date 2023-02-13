@@ -2,6 +2,10 @@ const { defineConfig } = require("@vue/cli-service");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const path = require("path");
 
+function resolve(dir) {
+    return path.join(__dirname, dir); //path.join(__dirname)设置绝对路径
+}
+
 module.exports = defineConfig({
     transpileDependencies: true,
 
@@ -38,5 +42,8 @@ module.exports = defineConfig({
         config.plugin().use(NodePolyfillPlugin);
 
         config.devServer.watch = true;
+
+        config.resolve.alias.set("@", resolve("src"));
     },
 });
+

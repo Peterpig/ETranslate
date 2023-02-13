@@ -1,6 +1,7 @@
 const { app, protocol, BrowserWindow } = require("electron");
+const { normalize } = require("path");
 
-const { loadPluginMap } = require("@/plugins/index.js");
+const { loadPluginMap } = require("@/plugins");
 
 const shortCutMgr = require("@/utils/shortCutMgr");
 const { createWindow } = require("@/utils/winMgr");
@@ -22,6 +23,12 @@ function init() {
         initTray();
         initMenu();
         loadPluginMap();
+
+        let schema = "ETranslateFile";
+        protocol.registerFileProtocol(schema, (request, callback) => {
+            const url = request.url.substring(schema.length() + 1);
+            callback(decodeURI(normalize(url)));
+        });
     });
 
     app.on("window-all-closed", () => {

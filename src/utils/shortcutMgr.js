@@ -2,12 +2,14 @@ const electron = require("electron");
 const dialog = (electron || electron.remote).dialog;
 const { createTranslateWindow } = require("./winMgr");
 
-const config = require("../config");
+const config = require("@/config");
+const { loadPluginMap } = require("@/plugins");
 
 const globalCommands = {
     translateText: {
         defaultShortcut: "ctrl+D",
         func: async () => {
+            await loadPluginMap();
             if (!config.context.translateWindow) {
                 await createTranslateWindow();
             }
@@ -17,6 +19,14 @@ const globalCommands = {
                 config.context.translateWindow.focus();
             }
             config.context.translateWindow.focus();
+        },
+    },
+    devTools: {
+        defaultShortcut: "ctrl+F11",
+        func: async () => {
+            config.context.translateWindow.webContents.openDevTools({
+                mode: "bottom",
+            });
         },
     },
 };

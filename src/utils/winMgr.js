@@ -3,6 +3,7 @@ const { createProtocol } = require("vue-cli-plugin-electron-builder/lib");
 const path = require("path");
 
 const config = require("@/config");
+let translateWindow;
 
 async function createWindow() {
     config.context.mainWindow = new BrowserWindow({
@@ -35,7 +36,7 @@ async function createWindow() {
 }
 
 async function createTranslateWindow() {
-    config.context.translateWindow = new BrowserWindow({
+    translateWindow = new BrowserWindow({
         width: config.width,
         height: config.height,
         title: config.title,
@@ -55,38 +56,35 @@ async function createTranslateWindow() {
     });
 
     if (config.debug) {
-        await config.context.translateWindow.loadURL(
-            "http://127.0.0.1:8080/#/translate"
-        );
-        if (!config.IS_TEST)
-            config.context.translateWindow.webContents.openDevTools({
-                mode: "bottom",
-            });
+        await translateWindow.loadURL("http://127.0.0.1:8080/#/translate");
+        // if (!config.IS_TEST)
+        //     translateWindow.webContents.openDevTools({
+        //         mode: "bottom",
+        //     });
     } else {
         createProtocol("app");
-        config.context.translateWindow.loadURL(
-            "app://./index.html/#/translate"
-        );
-        config.context.translateWindow.webContents.openDevTools({
+        translateWindow.loadURL("app://./index.html/#/translate");
+        translateWindow.webContents.openDevTools({
             mode: "bottom",
         });
     }
 
-    config.context.translateWindow.on("blur", (event) => {
-        if (config.context.translateWindow.isAlwaysOnTop()) {
+    translateWindow.on("blur", (event) => {
+        if (translateWindow && translateWindow.isAlwaysOnTop()) {
             event.preventDefault();
         } else {
-            config.context.translateWindow.close();
-            config.context.translateWindow = null;
+            translateWindow.close();
+            translateWindow = null;
+            config.context.translateWindow = translateWindow;
         }
     });
 
-    config.context.translateWindow.on("close", () => {
-        config.context.translateWindow = null;
+    translateWindow.on("closed", () => {
+        translateWindow = null;
+        config.context.translateWindow = translateWindow;
     });
-    config.context.translateWindow.on("closed", () => {
-        config.context.translateWindow = null;
-    });
+
+    config.context.translateWindow = translateWindow;
 }
 
 module.exports = { createWindow, createTranslateWindow };

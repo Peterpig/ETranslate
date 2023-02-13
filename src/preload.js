@@ -16,6 +16,7 @@ const ipcSend = async (type, data) => {
             data,
         })
         .then((res) => {
+            console.log("res == ", res);
             return JSON.parse(res);
         });
 };
@@ -38,6 +39,9 @@ contextBridge.exposeInMainWorld("API", {
     },
     exec: (data) => {
         return ipcSend("PluginExec", { data });
+    },
+    getTranslatePlugins: () => {
+        return ipcSend("getTranslatePlugins");
     },
 });
 

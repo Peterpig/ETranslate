@@ -3,7 +3,7 @@
 
 module.exports = {
     title: "ELaunch",
-    width: 925,
+    width: 400,
     height: 700,
     maxHeight: 700,
     language: null,
@@ -14,6 +14,7 @@ module.exports = {
     display: "primary",
     shortcuts: {
         translateText: { default: "ctrl+D" },
+        devTools: { default: "ctrl+F11" },
     },
     plugins: {
         // app: {
@@ -44,6 +45,7 @@ module.exports = {
         // },
         youdao: {
             enable: true,
+            cn_name: "有道词典",
             type: "translate",
             config: {},
         },

@@ -51,7 +51,15 @@ class API_ {
         );
     }
 
-    static getTranslatePlugins() {}
+    static getTranslatePlugins() {
+        let res = [];
+        for (let pluginName in config.pluginMap) {
+            let pluginInfo = config.pluginMap[pluginName];
+            if (!pluginInfo["enable"]) continue;
+            if (pluginInfo["type"] === "translate") res.push(pluginInfo);
+        }
+        return res;
+    }
 
     static PluginExec({ data }) {
         const cmdInfo = parseCmd(data.data);
