@@ -66,7 +66,7 @@ body {
     border: 1px solid #dcdfe6;
 }
 .br{
-    border-radius: 8px;
+    border-radius: 4px;
 }
 .bd-shadow{
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -77,6 +77,18 @@ body {
     margin-right: 5px;
 }
 
+@mixin changeDirection($deg, $time) {
+    transform: rotate($deg);
+    -webkit-transform: rotate($deg);
+    -moz-transform: rotate($deg);
+    -o-transform: rotate($deg);
+    transition: all $time;
+  }
+
+ @keyframes rotation{
+    from{transform: rotate(0deg)}
+    to{transform: rotate(360deg)}
+ }
 
 [class^="iconfont-"], [class*=" iconfont-"]
 {

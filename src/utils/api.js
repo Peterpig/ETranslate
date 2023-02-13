@@ -16,8 +16,6 @@ class API_ {
     }
 
     static fixWindowToogle({ data }) {
-        console.log("context == ", config.context);
-
         if (
             data.window &&
             config.context[data.window] &&

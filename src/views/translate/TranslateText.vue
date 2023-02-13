@@ -16,7 +16,7 @@
          :rows=3
          :autosize="{ minRows: minRows}"
          @blur="onBlur"
-
+         @keyup.enter.native="Translate"
       )
       .input-tool
          i.iconfont-laba
@@ -25,15 +25,29 @@
             | 识别为
             .lang
                |  {{ lang }}
-      el-button(@click="Translate") 翻译
-      | tt == {{ tt }}
 
-   .row.plugins.mt(v-for="plugin in plugins")
+   .row.plugins.mt(v-for="(plugin, pluginName) in plugins")
       .header
-         el-image.image(
-            :src="require(`@/plugins/${plugin.name}/assets/icon.svg`)"
+         .left
+            el-image.image.bd.br(
+               :src="require(`@/plugins/${plugin.name}/assets/icon.svg`)"
+            )
+            .ml
+               | {{ plugin.cn_name }}
+
+         i.loading.iconfont-loading(v-if="plugin.loading")
+         i.iconfont-arrow(
+            :class="{'arrow-down': plugin.fold === false,'arrow-left': plugin.fold === true}"
+            @click="toogleFold(plugin)"
          )
-         | {{ plugin.cn_name }}
+      .info(v-if="plugin.res")
+         .ori
+            | {{ plugin.res.ori }}
+         .web(v-if="plugin.res.web && plugin.res.web.length > 0")
+            | 网络释义:
+            .web-content
+               .content.mt(v-for="web in plugin.res.web")
+                  | {{ web }}
 
 
 
@@ -46,17 +60,15 @@
 
 <script >
 import _ from "lodash";
-// import { translateWindow } from '@/background';
 
 export default {
   data(){
     return {
       tudingIsFix: false,
       translateText: "",
-      tt: "",
       lang: null,
       minRows: 3,
-      plugins: [],
+      plugins: {},
     }
   },
   mounted(){
@@ -65,15 +77,30 @@ export default {
             this.translateText = text
          }
       })
+      let plugins_ = {}
       window.API.getTranslatePlugins().then((plugins) => {
-         this.plugins = plugins
+         if(!plugins){
+            return
+         }
+         plugins.map((plugin) => {
+            plugin.fold = true
+            plugin.res = null
+            plugin.loading = false
+            plugins_[plugin.name] = plugin
+         })
+
+         this.plugins = plugins_
+
       })
       this.tudingToogle()
   },
   watch: {
    translateText(newVal, oldVal){
-      if(!newVal)
+      if(!newVal){
          this.lang = null
+         this.resetPlugins()
+      }
+
       if(newVal.trim() !== oldVal.trim())
          this.identifyText()
    }
@@ -110,22 +137,52 @@ export default {
          })
       }, 1000),
       Translate(){
-         window.API.exec(`youdao ${this.translateText}`).then((res)=> {
-            this.tt = res
-         })
+         for( let pluginName in this.plugins){
+            let plugin = this.plugins[pluginName]
+            plugin.loading = true
+            window.API.exec(`${pluginName} ${this.translateText}`).then((res)=> {
+               if(res){
+                  plugin.res = res
+                  plugin.loading = false
+                  plugin.fold = !res
+               }
+
+            })
+         }
+
       },
+      toogleFold(plugin){
+         plugin.fold = plugin.fold !== undefined ? !plugin.fold : false
+      },
+      resetPlugins(){
+         console.log("resetPlugins == ")
+         // let plugins = this.plugins.map((plugin) => {
+         //    plugin.fold = true
+         //    plugin.res = null
+         //    return plugin
+         // })
+         let plugins = {}
+         for( let pluginName in this.plugins){
+            let plugin = this.plugins[pluginName]
+            plugin.fold = true
+            plugin.res = null
+            plugins[pluginName] = plugin
+         }
+         this.plugins = plugins
+      }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .main-box{
+   text-align: left;
    padding: 10px;
    i {
       font-size: 20px;
    }
    .row{
-      background-color: #f6f6f6;
+      background-color: #f1f1f1;
       border-radius: 8px;
    }
    .iconfont-tuding-fix{
@@ -136,7 +193,7 @@ export default {
       display: flex;
       .left {
          width: 50%;
-         text-align: left;
+
       }
       .right {
          margin-right: 0;
@@ -177,13 +234,55 @@ export default {
    }
 
    .plugins {
+      text-align: left;
       .header {
-         padding: 10px;
-         .image{
-            widows: 12px;
-            height: 12px;
+         padding: 5px 10px;
+         display: flex;
+         justify-content: space-between;
+         align-content: center;
+         align-items: center;
+
+         .left{
+            display: flex;
+            align-content: center;
+            align-items: center;
+            .image{
+               widows: 12px;
+               height: 12px;
+            }
+         }
+         .loading{
+            transform: rotate(0deg);
+            animation: rotation 3s linear infinite;
+         }
+         .iconfont-arrow{
+            font-size: 14px;
+         }
+         .arrow-down{
+            @include changeDirection(-90deg, .3s)
+         }
+         .arrow-left{
+            @include changeDirection(0deg, .3s)
          }
       }
+      .el-divider--horizontal{
+         margin: 0;
+      }
+      .info {
+         padding: 10px;
+         background-color: #f6f6f6;
+         .ori {
+            font-size: 18px
+         }
+         .web {
+            display: flex;
+            align-items: baseline;
+            .web-content {
+               margin: 0 10px;
+            }
+         }
+      }
+
    }
 
 
@@ -192,7 +291,7 @@ export default {
 
 <style scoped>
    .main-box >>> .el-textarea > textarea {
-      background-color: #f6f6f6;
+      background-color: #f1f1f1;
       border: none;
       width: 100%
    }

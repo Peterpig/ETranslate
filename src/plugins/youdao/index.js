@@ -18,9 +18,21 @@ function exec(cmdInfo) {
 }
 
 function parseRes(res) {
-    if (res && res.data && res.data.translation) {
-        return res.data.translation.join("\n");
+    console.log(res.data);
+    let ret = {
+        ori: "",
+        web: [],
+    };
+    if (!res || !res.data) return;
+    if (res.data.translation) {
+        ret.ori = res.data.translation.join("\n");
     }
+    if (res.data.web) {
+        res.data.web.forEach((element) => {
+            ret.web.push(element.value.join(","));
+        });
+    }
+    return ret;
 }
 
 module.exports = {

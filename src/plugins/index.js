@@ -1,5 +1,3 @@
-let path = require("path");
-const fs = require("fs");
 const config = require("@/config");
 
 let pluginMap;
@@ -24,23 +22,6 @@ async function loadPluginMap() {
         let pluginInfo = config.plugins[pluginName];
         if (!pluginInfo.enable) return;
         pluginInfo.name = pluginName;
-
-        try {
-            let iconPath = require.resolve(
-                `@/plugins/${pluginInfo.name}/assets/icon.svg`
-            );
-            let err = fs.accessSync(iconPath, fs.constants.F_OK);
-            if (!err) {
-                pluginInfo.iconPath = iconPath;
-                pluginInfo.iconPath2 = `@/plugins/${pluginInfo.name}/assets/icon.svg`;
-                pluginInfo.iconPath3 = path.join(
-                    __dirname,
-                    `/plugins/${pluginInfo.name}/assets/icon.svg`
-                );
-            }
-        } catch (error) {
-            console.log("error == ", error);
-        }
         pluginMap[pluginName] = pluginInfo;
     });
     config.pluginMap = pluginMap;

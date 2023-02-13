@@ -16,7 +16,6 @@ const ipcSend = async (type, data) => {
             data,
         })
         .then((res) => {
-            console.log("res == ", res);
             return JSON.parse(res);
         });
 };
