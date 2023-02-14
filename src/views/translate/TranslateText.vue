@@ -93,7 +93,6 @@ export default {
          this.plugins = plugins_
 
       })
-      this.tudingToogle()
   },
   watch: {
    translateText(newVal, oldVal){
